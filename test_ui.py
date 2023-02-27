@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -33,7 +33,11 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.Page1)
         self.label_2.setGeometry(QtCore.QRect(410, 170, 251, 221))
         self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap("../Downloads/r2100.jpeg"))
+
+        self.CURRENT_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+        self.filename = os.path.join(self.CURRENT_DIRECTORY, "assets/cauliflower.jpeg")
+
+        self.label_2.setPixmap(QtGui.QPixmap("./assets/r2100.png"))
         self.label_2.setScaledContents(True)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")

@@ -50,7 +50,12 @@ class get_Data:
 
     
 if __name__=='__main__':
-   ser = serial.Serial(port='COM6', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
+   #for windows you have to install usb to serial driver
+   #windows port = COM6
+
+   #for linux you can check the port by using 'dmesg | grep tty', the port having cp210x is what we have to use
+   #port = <connected-port> (usually /dev/ttyUSB0)
+   ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
    request = (0xde, 0x01, 0x05, 0x59, 0x83)
    get_data = get_Data(ser, request)
    

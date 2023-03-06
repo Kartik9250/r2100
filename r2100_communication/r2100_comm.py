@@ -9,7 +9,6 @@
 
 # request = (0xde, 0x01, 0x05, 0x59, 0x83)
 # get_data = get_Data(ser, request)
-import serial
 
 class get_Data:
    def __init__(self, ser, request):
@@ -25,13 +24,13 @@ class get_Data:
       self.dec_dist = []
       self.dec_echo = []
 
+
+      self.ser.write(request)
+
    def raw(self):
       self.raw_data = []
       for i in range(0, 50):
-         print("--------------")
-         print(self.ser.read(1).hex())
-         self.raw_data.append(ser.read(1).hex())
-         print("============")
+         self.raw_data.append(self.ser.read(1).hex())
       #print("raw data: ",len(self.raw_data),self.raw_data)
       return self.raw_data
 
@@ -66,7 +65,7 @@ class get_Data:
 
    def decimal_dist(self):
       data = self.decimal_all()
-      #print(data)
+      print(data)
 
       for i in data:
          self.dec_dist.append(i[0])
@@ -81,12 +80,4 @@ class get_Data:
          self.dec_dist.append(i[1])
       #print("Decimal echo data: ",len(self.dec_echo), self.dec_echo)
       return self.dec_dist
-
-ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
-request = (0xde, 0x01, 0x05, 0x59, 0x83)
-get_data = get_Data(ser, request)  
-ser.write(request)
-
-for i in range(0,11):
-   get_data.decimal_dist()
-   print(i)
+    

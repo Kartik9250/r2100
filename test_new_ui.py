@@ -9,7 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from pyqtgraph import PlotWidget
+import pyqtgraph as pg
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -49,7 +50,7 @@ class Ui_MainWindow(object):
         spacerItem1 = QtWidgets.QSpacerItem(598, 26, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem1)
         self.layoutWidget1 = QtWidgets.QWidget(self.Page1)
-        self.layoutWidget1.setGeometry(QtCore.QRect(0, 180, 369, 201))
+        self.layoutWidget1.setGeometry(QtCore.QRect(0, 180, 401, 201))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.layoutWidget1)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -196,7 +197,7 @@ class Ui_MainWindow(object):
         self.label_18.setFont(font)
         self.label_18.setObjectName("label_18")
         self.layoutWidget2 = QtWidgets.QWidget(self.Page2)
-        self.layoutWidget2.setGeometry(QtCore.QRect(10, 450, 421, 25))
+        self.layoutWidget2.setGeometry(QtCore.QRect(10, 450, 421, 40))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -211,10 +212,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.pushButton_3)
         spacerItem8 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem8)
+        self.widget = PlotWidget(self.Page2)
+        self.widget.setGeometry(QtCore.QRect(10, 70, 431, 361))
+        self.widget.setObjectName("widget")
         self.stackedWidget.addWidget(self.Page2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 777, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 777, 32))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -253,12 +257,12 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuDevices.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
+        bargraph = pg.BarGraphItem(x = x, height = y1, width = 0.6, brush ='g')
+        window.addItem(bargraph)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -298,6 +302,8 @@ class Ui_MainWindow(object):
         self.actionCOM5.setText(_translate("MainWindow", "COM5"))
         self.actionCOM6.setText(_translate("MainWindow", "COM6"))
         self.actionHelp.setText(_translate("MainWindow", "Help"))
+        
+
 
 
 if __name__ == "__main__":

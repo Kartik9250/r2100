@@ -1,25 +1,39 @@
-import serial
-import matplotlib.pyplot as plt
+# While making the class object you must pass the following parameters: 
+# ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
 
-from matplotlib.animation import FuncAnimation
-  
+#for windows you have to install usb to serial driver
+#windows port = COM6
+
+#for linux you can check the port by using 'dmesg | grep tty', the port having cp210x is what we have to use
+#port = <connected-port> (usually /dev/ttyUSB0)
+
+# request = (0xde, 0x01, 0x05, 0x59, 0x83)
+# get_data = get_Data(ser, request)
+import serial
+
 class get_Data:
    def __init__(self, ser, request):
-      self.ser = ser.write(request)
+      self.ser = ser
       self.raw_data = []
       self.filtered_data = []
-      self.dec_data = []
       self.dist_lsb = []
       self.dist_msb = []
       self.echo_lsb = []
       self.echo_msb = []
 
+      self.dec_all = []
+      self.dec_dist = []
+      self.dec_echo = []
+
    def raw(self):
       self.raw_data = []
       for i in range(0, 50):
+         print("--------------")
+         print(self.ser.read(1).hex())
          self.raw_data.append(ser.read(1).hex())
+         print("============")
       #print("raw data: ",len(self.raw_data),self.raw_data)
-      return(self.raw_data)
+      return self.raw_data
 
    def filtered(self):
       self.raw()
@@ -37,77 +51,42 @@ class get_Data:
          self.filtered_data.append([self.dist_lsb[i], self.dist_msb[i], self.echo_lsb[i], self.echo_msb[i]])
          
       #print("filtered data: ", len(self.filtered_data), self.filtered_data)
-      return(self.filtered_data)
+      return self.filtered_data
    
-   def decimal(self):
+   def decimal_all(self):
       self.filtered()
       for i in range(0,11):
          data = []
          for j in range(0,2):
             data.append(int(self.filtered_data[i][2*j+1]+self.filtered_data[i][2*j],16))
-         self.dec_data.append(data)
+         self.dec_all.append(data)
 
-      #print("Decimal data: ",len(self.dec_data), self.dec_data)
-      return(self.dec_data)      
+      #print("All decimal data: ",len(self.dec_all), self.dec_all)
+      return self.dec_all
+
+   def decimal_dist(self):
+      data = self.decimal_all()
+      #print(data)
+
+      for i in data:
+         self.dec_dist.append(i[0])
+      #print("Decimal distance data: ",len(self.dec_dist), self.dec_dist)
+      return self.dec_dist
    
-def animate(i):
-   get_data = get_Data(ser, request)
-   #print("i is", i)
-   global func_data
-   y1=func_data[0][0]
-   y2=func_data[1][0]
-   y3=func_data[2][0]
-   y4=func_data[3][0]
-   y5=func_data[4][0]
-   y6=func_data[5][0]
-   y7=func_data[6][0]
-   y8=func_data[7][0]
-   y9=func_data[8][0]
-   y10=func_data[9][0]
-   y11=func_data[10][0]
-   if y1&y2&y3&y4&y5&y6&y7&y8&y10&y11 <= 2000:
-      color_val= 'red'
-   else:
-      color_val = 'blue'
-   plt.clf()
-   plt.bar([1,2,3,4,5,6,7,8,9,10,11], [y1,y2,y3,y4,y5,y6,y7,y8,y9,y10,y11], color=color_val)
-   
- 
-   func_data = get_data.decimal()[::-1]
-    
-if __name__=='__main__':
-   #for windows you have to install usb to serial driver
-   #windows port = COM6
 
-   #for linux you can check the port by using 'dmesg | grep tty', the port having cp210x is what we have to use
-   #port = <connected-port> (usually /dev/ttyUSB0)
-   ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
-   request = (0xde, 0x01, 0x05, 0x59, 0x83)
-   get_data = get_Data(ser, request)
-   
-   global func_data
-   func_data = get_data.decimal()[::-1]
+   def decimal_echo(self):
+      data = self.decimal_all()
 
-   fig = plt.figure(figsize=(8,6))
-   axes = fig.add_subplot(1,1,1)
+      for i in data:
+         self.dec_dist.append(i[1])
+      #print("Decimal echo data: ",len(self.dec_echo), self.dec_echo)
+      return self.dec_dist
 
-   plt.title("R2100", color=("blue"))
-   ani = FuncAnimation(fig, animate, interval=200,blit=False)
+ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
+request = (0xde, 0x01, 0x05, 0x59, 0x83)
+get_data = get_Data(ser, request)  
+ser.write(request)
 
-   plt.show()
-
-
-
-   # print("1")
-   # for i in range (0,11):
-   #    x_values.append(i+1)
-   #    y_values.append(func_data[i][0])
-      
-   # plt.bar(x_values, y_values)
-   
-   # plt.title("R2100")
-   # plt.xlabel("Lazers")
-   # plt.ylabel("Distance")
-   
-   # plt.show()
-   
+for i in range(0,11):
+   get_data.decimal_dist()
+   print(i)

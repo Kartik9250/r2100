@@ -14,6 +14,7 @@ import serial
 class get_Data:
    def __init__(self, ser, request):
       self.ser = ser
+      self.request = request
       self.raw_data = []
       self.filtered_data = []
       self.dist_lsb = []
@@ -29,13 +30,13 @@ class get_Data:
       
 
    def raw(self):
-      self.ser.write(request)
+      self.ser.write(self.request)
       self.raw_data = []
       i = 0
       while i < 50:
          data = self.ser.read(1).hex()
          if data == '':
-            self.ser.write(request)
+            self.ser.write(self.request)
             continue
          else:
             self.raw_data.append(data)

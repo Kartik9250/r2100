@@ -4,7 +4,7 @@ import r2100_communication.r2100_comm as r
 import serial
 
 def animate(i):
-   ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
+   ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001, write_timeout=0.001)
    request = (0xde, 0x01, 0x05, 0x59, 0x83)
    get_data = r.get_Data(ser, request)
    print("i is", i)
@@ -38,7 +38,7 @@ def main(z):
    if z == True:
       #plt.ion()
       global ser, request
-      ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS)
+      ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.001, write_timeout=0.001)
       request = (0xde, 0x01, 0x05, 0x59, 0x83)
       get_data = r.get_Data(ser, request)
 

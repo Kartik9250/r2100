@@ -66,17 +66,16 @@ class get_Data:
    def decimal_all(self):
       data = self.filtered()
       for i in range(0,11):
-         data = []
+         data_list = []
          for j in range(0,2):
-            data.append(int(data[i][2*j+1]+data[i][2*j],16))
-         self.dec_all.append(data)
+            data_list.append(int(data[i][2*j+1]+data[i][2*j],16))
+         self.dec_all.append(data_list)
 
       #print("All decimal data: ",len(self.dec_all), self.dec_all)
       return self.dec_all
 
    def decimal_dist(self):
       data = self.decimal_all()
-      print(data)
 
       for i in data:
          self.dec_dist.append(i[0])
@@ -92,14 +91,14 @@ class get_Data:
       #print("Decimal echo data: ",len(self.dec_echo), self.dec_echo)
       return self.dec_dist
 
-#count = 1
-#while True:
+# count = 1
+# while True:
 #   print(count)
 #   ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.002, write_timeout=0.002)
 #   request = (0xde, 0x01, 0x05, 0x59, 0x83)
 #   get_data = get_Data(ser, request)
-#   get_data.raw()
-#   
-#
+#   print(get_data.decimal_dist())
+  
+
 #   ser.close()
 #   count += 1

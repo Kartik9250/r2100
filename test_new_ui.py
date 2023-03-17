@@ -9,8 +9,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraph import PlotWidget
 import pyqtgraph as pg
+import serial
+import time
+import r2100_communication.r2100_comm as r
+import random
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -212,9 +215,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.pushButton_3)
         spacerItem8 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem8)
-        self.widget = PlotWidget(self.Page2)
-        self.widget.setGeometry(QtCore.QRect(10, 70, 431, 361))
-        self.widget.setObjectName("widget")
+        self.graphWidget = pg.PlotWidget(self.Page2)
+        self.graphWidget.setGeometry(QtCore.QRect(10, 70, 431, 361))
+        self.graphWidget.setObjectName("widget")
         self.stackedWidget.addWidget(self.Page2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -257,12 +260,27 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuDevices.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
-        bargraph = pg.BarGraphItem(x = x, height = y1, width = 0.6, brush ='g')
-        window.addItem(bargraph)
+        self.flag = True
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.graphWidget.setBackground('w')
+        
+        self.x = [1,2,3,4,5,6,7,8,9,10,11]
+        self.y = [0,0,0,0,0,0,0,0,0,0,0]
+        self.bargraph = pg.BarGraphItem(x = self.x, height = self.y, width = 0.6, brush ='blue')
+        self.graphWidget.addItem(self.bargraph)
+
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(0)
+        self.timer.setInterval(150)
+        self.timer.timeout.connect(self.start_plot)
+        
+        self.pushButton.clicked.connect(self.change_widget)
+        self.pushButton_2.clicked.connect(self.start_plot)
+        self.pushButton_3.clicked.connect(self.clear_graph)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -302,9 +320,30 @@ class Ui_MainWindow(object):
         self.actionCOM5.setText(_translate("MainWindow", "COM5"))
         self.actionCOM6.setText(_translate("MainWindow", "COM6"))
         self.actionHelp.setText(_translate("MainWindow", "Help"))
+
+    def change_widget(self):
+        self.stackedWidget.setCurrentIndex(1)
         
+    def clear_graph(self):
+        self.graphWidget.clear()
+        self.timer.stop()
+        self.flag = True
 
+    def start_plot(self):
 
+        self.y = self.y[1:]  # Remove the first 
+        self.y.append(random.randint(0,100))  # Add a new random value.
+
+        self.bargraph.setOpts(height=self.y)
+
+        if self.flag == True:
+            self.timer.start()
+            print(self.graphWidget.getPlotItem())
+            self.x = [1,2,3,4,5,6,7,8,9,10,11]
+            self.y = [11,12,13,14,15,16,17,18,19,20,21]
+            self.bargraph = pg.BarGraphItem(x = self.x, height = self.y, width = 0.6, brush ='blue')
+            self.graphWidget.addItem(self.bargraph)
+            self.flag = False
 
 if __name__ == "__main__":
     import sys
